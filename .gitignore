@@ -1,0 +1,42 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build outputs / temp files
+dist/
+build/
+tmp/
+temp/
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.sublime*
+*.swp
+
+# Docker artifacts
+docker-compose.override.yml
+*.tar
+*.tgz
+
+# Core.Persistence generated stuff
+Core.Persistence/node_modules/
+Core.Persistence/dist/

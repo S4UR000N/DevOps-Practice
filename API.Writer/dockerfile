@@ -1,0 +1,7 @@
+FROM node:24-alpine
+WORKDIR /app
+COPY API.Writer/package*.json ./
+RUN npm install --production
+COPY API.Writer/. .
+EXPOSE 3001
+CMD ["node", "index.js"]

@@ -1,0 +1,33 @@
+services:
+  writer:
+    build:
+      context: .
+      dockerfile: API.Writer/Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - db-data:/data
+    environment:
+      - DB_FILE=/data/db.json
+    networks:
+      - internal
+
+  reader:
+    build:
+      context: .
+      dockerfile: API.Reader/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - db-data:/data
+    environment:
+      - DB_FILE=/data/db.json
+    networks:
+      - internal
+
+volumes:
+  db-data:
+
+networks:
+  internal:
+    driver: bridge
