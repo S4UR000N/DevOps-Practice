@@ -38,3 +38,23 @@ jobs:
           file: API.Reader/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/devops-practice:reader
+
+            - name: Delete old images from Docker Hub (keep latest only)
+        run: |
+          REPO=${{ secrets.DOCKERHUB_USERNAME }}/devops-practice
+          for service in writer reader; do
+            # Fetch all tags for the service
+            tags=$(curl -s -u "${{ secrets.DOCKERHUB_USERNAME }}:${{ secrets.DOCKERHUB_TOKEN }}" \
+              "https://hub.docker.com/v2/repositories/$REPO/tags/?page_size=100" \
+              | jq -r '.results[].name' | grep $service)
+
+            # Keep the most recent tag (plain "writer"/"reader"), delete others
+            for tag in $tags; do
+              if [ "$tag" != "$service" ]; then
+                echo "Deleting $REPO:$tag"
+                curl -s -X DELETE -u "${{ secrets.DOCKERHUB_USERNAME }}:${{ secrets.DOCKERHUB_TOKEN }}" \
+                  "https://hub.docker.com/v2/repositories/$REPO/tags/$tag/"
+              fi
+            done
+          done
+
