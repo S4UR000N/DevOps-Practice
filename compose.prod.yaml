@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  writer:
+    image: s4ur000n/devops-practice:writer
+    ports:
+      - "3001:3001"
+    volumes:
+      - db-data:/data
+    environment:
+      - DB_FILE=/data/db.json
+    networks:
+      - internal
+    restart: unless-stopped
+
+  reader:
+    image: s4ur000n/devops-practice:reader
+    ports:
+      - "3000:3000"
+    volumes:
+      - db-data:/data
+    environment:
+      - DB_FILE=/data/db.json
+    networks:
+      - internal
+    restart: unless-stopped
+
+volumes:
+  db-data:
+
+networks:
+  internal:
+    driver: bridge

@@ -8,7 +8,6 @@ const DB_FILE = process.env.DB_FILE || '/data/db.json';
 const adapter = new JSONFile(DB_FILE);
 const db = new Low(adapter, {});
 
-// Initialize DB
 await db.read();
 if (!db.data) {
   db.data = { records: [], insertCount: 0 };

@@ -9,7 +9,6 @@ const MAX_RECORDS = 100;
 const adapter = new JSONFile(DB_FILE);
 const db = new Low(adapter, {});
 
-// Initialize DB
 await db.read();
 if (!db.data) {
   db.data = { records: [], insertCount: 0 };
@@ -25,7 +24,6 @@ app.get('/', async (req, res) => {
   const record = `record ${next}`;
   db.data.records.push(record);
 
-  // Trim to MAX_RECORDS
   if (db.data.records.length > MAX_RECORDS) {
     db.data.records = db.data.records.slice(-MAX_RECORDS);
   }
