@@ -29,15 +29,19 @@ const app = express();
 app.get('/', async (req, res) => {
   await ensureData();
 
+  if (db.data.records.length >= MAX_RECORDS) {
+    return res.status(200).json({
+      message: 'Max records reached, nothing added',
+      totalRecords: db.data.records.length,
+      insertCount: db.data.insertCount
+    });
+  }
+
   const next = db.data.insertCount + 1;
   const record = `record ${next}`;
   db.data.records.push(record);
-
-  if (db.data.records.length > MAX_RECORDS) {
-    db.data.records = db.data.records.slice(-MAX_RECORDS);
-  }
-
   db.data.insertCount = next;
+
   await db.write();
 
   res.json({
