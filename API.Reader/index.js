@@ -9,15 +9,14 @@ const adapter = new JSONFile(DB_FILE);
 const db = new Low(adapter, {});
 
 await db.read();
-if (!db.data) {
-  db.data = { records: [], insertCount: 0 };
-  await db.write();
-}
+db.data = db.data || {};
+db.data.records = db.data.records || [];
 
 const app = express();
 
 app.get('/', async (req, res) => {
   await db.read();
+  db.data.records = db.data.records || [];
   const lastRecords = db.data.records.slice(-10);
   res.json({ records: lastRecords });
 });

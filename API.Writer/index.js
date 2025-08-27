@@ -10,10 +10,9 @@ const adapter = new JSONFile(DB_FILE);
 const db = new Low(adapter, {});
 
 await db.read();
-if (!db.data) {
-  db.data = { records: [], insertCount: 0 };
-  await db.write();
-}
+db.data = db.data || {};
+db.data.records = db.data.records || [];
+db.data.insertCount = db.data.insertCount || 0;
 
 const app = express();
 
