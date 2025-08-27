@@ -8,15 +8,23 @@ const DB_FILE = process.env.DB_FILE || '/data/db.json';
 const adapter = new JSONFile(DB_FILE);
 const db = new Low(adapter, {});
 
-await db.read();
-db.data = db.data || {};
-db.data.records = db.data.records || [];
+// helper to ensure schema always exists
+async function ensureData() {
+  await db.read();
+  if (!db.data) {
+    db.data = { records: [] };
+  }
+  if (!Array.isArray(db.data.records)) {
+    db.data.records = [];
+  }
+}
+
+await ensureData();
 
 const app = express();
 
 app.get('/', async (req, res) => {
-  await db.read();
-  db.data.records = db.data.records || [];
+  await ensureData();
   const lastRecords = db.data.records.slice(-10);
   res.json({ records: lastRecords });
 });
