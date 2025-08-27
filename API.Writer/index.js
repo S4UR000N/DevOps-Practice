@@ -9,15 +9,25 @@ const MAX_RECORDS = 100;
 const adapter = new JSONFile(DB_FILE);
 const db = new Low(adapter, {});
 
-await db.read();
-db.data = db.data || {};
-db.data.records = db.data.records || [];
-db.data.insertCount = db.data.insertCount || 0;
+async function ensureData() {
+  await db.read();
+  if (!db.data) {
+    db.data = { records: [], insertCount: 0 };
+  }
+  if (!Array.isArray(db.data.records)) {
+    db.data.records = [];
+  }
+  if (typeof db.data.insertCount !== 'number') {
+    db.data.insertCount = 0;
+  }
+}
+
+await ensureData();
 
 const app = express();
 
 app.get('/', async (req, res) => {
-  await db.read();
+  await ensureData();
 
   const next = db.data.insertCount + 1;
   const record = `record ${next}`;
@@ -30,7 +40,12 @@ app.get('/', async (req, res) => {
   db.data.insertCount = next;
   await db.write();
 
-  res.json({ message: 'Record added', record, totalRecords: db.data.records.length, insertCount: next });
+  res.json({
+    message: 'Record added',
+    record,
+    totalRecords: db.data.records.length,
+    insertCount: next
+  });
 });
 
 app.listen(PORT, () => console.log(`Writer running on port ${PORT}`));
