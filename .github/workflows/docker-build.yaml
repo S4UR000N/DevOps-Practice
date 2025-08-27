@@ -39,7 +39,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/devops-practice:reader
 
-            - name: Delete old images from Docker Hub (keep latest only)
+      - name: Delete old images from Docker Hub (keep latest only)
         run: |
           REPO=${{ secrets.DOCKERHUB_USERNAME }}/devops-practice
           for service in writer reader; do
